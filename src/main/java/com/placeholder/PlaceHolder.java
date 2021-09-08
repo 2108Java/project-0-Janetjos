@@ -1,5 +1,5 @@
 package com.placeholder;
 
-public class Placeholder {
+public class  PlaceHolder{
 
 }
