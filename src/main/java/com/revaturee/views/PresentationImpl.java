@@ -1,7 +1,11 @@
 package com.revaturee.views;
 
+import java.util.List;
 import java.util.Scanner;
 
+import com.revaturee.models.Accounts;
+import com.revaturee.models.Customer;
+import com.revaturee.models.TransactionLog;
 import com.revaturee.models.User;
 import com.revaturee.service.Authenticate;
 import com.revaturee.service.AuthenticateImpl;
@@ -10,80 +14,24 @@ import com.revaturee.service.Service;
 
 public class PresentationImpl implements Presentation{
 	
-	private Authenticate auth = new AuthenticateImpl();
+	private Authenticate auth;
+	
+	Accounts account = new Accounts();
+	Customer customer = new Customer();
 	
 	Service service;
 	
 	Scanner sc = new Scanner(System.in);
 	
-	//Employee methods
+		
+	//private static final Logger loggy = Logger.getLogger(PresentationImpl.class);
 	
-	//Menu for registering for an account
-	public void registerMenu() {
-		System.out.println("Registering for an account");
-		System.out.println("Enter customer name:");
-		String customerName = sc.nextLine();
-		System.out.println("Enter mailing address:");
-		String mailingAddress = sc.nextLine();
-		System.out.println("Enter residential address:");
-		String residentialAddress = sc.nextLine();
-		System.out.println("Enter phone number:");
-		String phoneNumber = sc.nextLine();
-		//System.out.println("Is credit card required?");
-		service.addAccount(customerName, mailingAddress, residentialAddress, phoneNumber);
-				
+	public PresentationImpl(Authenticate auth) {
+		this.auth = auth;
 	}
-	
-	//Menu for viewing account balance
-	//--takes user or customer object and return appropriate result
-	public void viewAccountBalanceMenu() {
-		System.out.println("Enter the account number:");
-		String accNumber = sc.nextLine();
-		//return accNumber; -- calls method in service layer to retrieve account details		
-	}
-	
-	//Menu for transferring money from cusomer's account
-	//--takes user or account and return appropriate result
-	public void transferMoneyMenu() {
-		System.out.println("Enter the from account:");
-		String fromAcount = sc.nextLine();
-		System.out.println("Enter the destination account:");
-		String toAcount = sc.nextLine();
-		//boolean success = service.transferMoney(fromAccount,toAccount)
-		//must add the transaction to the transaction log -- call the appropriate method
-				
-	}
-	
-	//Menu for accepting money (Not sure how this method works)
-	//Add query in database -> view row in table -> customer can accept payment -> calls deposit method	
-	public void acceptMoneyMenu() {
-		System.out.println();
-	}
-	
-	//Menu for viewing transaction log
-	//takes user or account object as input and return transaction log(list)
-	//public void viewTransactionLogMenu() {
-		//System.out.println("");
-	//}
-	
-	
-	//Employee methods
-	//Menu for approving transaction
-	//takes in user object
-	//public void approveTransactionMenu() {
-		//System.out.println("");
-	//}
-	
-	//Take in employee user object
-	//calls approve method in service layer
-	public void approveAccountMenu() {
-		System.out.println("Please enter account number:");
-		String accountNumber = sc.nextLine();
-	}
-	
-	
-	
+
 	public User loginMenu() {
+		//loggy.info("User sees login application");
 		System.out.println("Please login");
 		System.out.println("Username");
 		String username = sc.nextLine();
@@ -92,7 +40,7 @@ public class PresentationImpl implements Presentation{
 		
 		boolean authenticated = auth.authenticate(username, password);
 		
-		User u = null;
+		User u = new User();
 		
 		if(authenticated) {
 			
@@ -107,62 +55,134 @@ public class PresentationImpl implements Presentation{
 		
 	}
 
-	public int customerDisplay(User u) {
+	public void customerDisplay(User u) {
 		System.out.println("Existing Customer Display");
 		System.out.println("Select what you want to do");
-		System.out.println("(1)Create account");//Individual,Joint,Starting balance
-		System.out.println("(2)View Balance");
-		//System.out.println("(3)Withdraw & deposit to account");
-		System.out.println("(3)Transfer money");
-		System.out.println("(4)Accept money transfer");
+		System.out.println("(1)Register for an account");
+		System.out.println("(2)View balance");
+		System.out.println("(3)Deposit money");
+		System.out.println("(4)Withdraw money");
 		System.out.println("(5)View transaction log");
+		System.out.println("(6)Create account with starting balance");
+		System.out.println("(0)Exit Menu");
 		
-		int option = sc.nextInt();
 		
+		
+		String option = sc.nextLine();
+		boolean runningOne = true;
+		while(runningOne) {
 		switch(option) {
-		case 1:
-			service.addAccount();
+		case "1":
+			System.out.println("Enter name:");
+			String custName = sc.nextLine();
+			System.out.println("Enter phone number:");
+			String custPhone = sc.nextLine();
+			customer.setCustomerName(custName);
+			customer.setPhoneNumber(custPhone);
+			service.createAccount(customer, u);		
 			break;
-		case 2:
-			service.viewBalance();
+		case "2":
+			System.out.println("Enter account number:");
+			String accNumber = sc.nextLine();
+			account.setAccountNumber(accNumber);
+			prettyDisplayAccounts(service.viewBalance(account, u, customer));
 			break;
-		case 3:
-			service.transferMoney();
+		case "3":
+			System.out.println("Enter amount you wish to deposit:");
+			float deposit = sc.nextFloat();
+			service.transferMoney(customer, deposit, u, account);
+			service.logDepositTransaction(customer, deposit, u, account);
 			break;
-		case 4:
-			service.acceptMoney();
+		case "4":
+			System.out.println("Enter amount you wish to withdraw:");
+			float withdraw = sc.nextFloat();
+			service.acceptMoney(withdraw, u, customer, account);
+			service.logWithdrawalTransaction(customer, withdraw, u, account);
 			break;
-		case 5:
-			service.viewTransactionLog();
+		case "5":
+			System.out.println("Enter account number:");
+			String accountNumber = sc.nextLine();
+			prettyDisplayTransactionLog(service.viewTransactionLog(accountNumber, u, customer));
+			
 			break;
+			
+		case "6":
+			System.out.println("Enter account number:");
+			String acNumber = sc.nextLine();
+			account.setAccountNumber(acNumber);
+			System.out.println("Enter Checking or Savings:");
+			String accType = sc.nextLine();
+			account.setAccountType(accType);
+			service.createCustomerAccount(account, u, customer);
+		case "0":
+			runningOne = false;
+			System.out.println("Exit!");
+			break;
+		
+		
 		}
 		
-		return option;
-				
+		
+		}		
 	}
 	
-	public int employeeDisplay(User u) {
-		System.out.println("Existing Customer Display");
+	private void prettyDisplayAccounts(List<Accounts> viewBalance) {
+		for (int i = 0; i < viewBalance.size(); i++) {
+            System.out.println(viewBalance.get(i));
+        }
+		
+	}
+
+	private void prettyDisplayTransactionLog(List<TransactionLog> viewTransactionLog) {
+		  for (int i = 0; i < viewTransactionLog.size(); i++) {
+	            System.out.println(viewTransactionLog.get(i));
+	        }
+		
+	}
+
+	public void employeeDisplay(User u) {
+		
+		Customer customer = new Customer();
+		
+		System.out.println("Employee Menu:");
 		System.out.println("Select what you want to do");
-		System.out.println("(1)View customer details");
-		System.out.println("(2) Approve or reject accounts");
+		System.out.println("(1)View log of all transactions");
+		System.out.println("(2)View customer's bank accounts");
+		System.out.println("(3)Approve account registration");
+		System.out.println("(0)Exit Menu");
+
 		
-		int option = sc.nextInt();
+		String option = sc.nextLine();
 		
+		boolean runningOne = true;
+		while(runningOne) {
 		switch(option) {
-		case 1:
-			service.viewCustomerDetails();
+		case "1":
+			prettyDisplayTransactionLog(service.viewAllTransactionLog(u));
 			break;
-		case 2:
-			service.transactionApproval();
+		case "2":
+			System.out.println("Enter customer ID:");
+			int id = sc.nextInt();
+			customer.setCustomerId(id);
+			prettyDisplayAccounts(service.viewAccounts(u, customer, account));
 			break;
-		case 3:
-			service.accountApproval();
+		case "3":
+			System.out.println("Enter customer ID:");
+			int id_1 = sc.nextInt();
+			customer.setCustomerId(id_1);
+			service.approveAccount(u, customer);
+			break;
+		case "4":
+			System.out.println("Exit!");
+			break;
+		case "0":
+			runningOne = false;
+			System.out.println("Exit!");
 			break;
 		
 		}
 		
-		return option;
+		}
 				
 	}
 		
@@ -190,18 +210,24 @@ public class PresentationImpl implements Presentation{
 			System.out.println("Please select one of the following:");
 			System.out.println("(1)Customer");
 			System.out.println("(2)Employee");
+			System.out.println("(0)Exit the application");
+
 		
-			int userType = sc.nextInt();
+			String userType = sc.nextLine();
 		
 			switch(userType) {
-			case 1:
+			case "1":
 				System.out.println("Customer Menu");
 				customerDisplay(user);
 				break;
 			
-			case 2:
+			case "2":
 				System.out.println("Employee Menu");
 				employeeDisplay(user);
+				break;
+			case "0":
+				running = false;
+				System.out.println("Exit!");
 				break;
 			
 			}

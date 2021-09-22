@@ -1,27 +1,33 @@
 package com.revaturee.service;
 
-import com.revaturee.models.Accounts;
-import com.revaturee.models.Customer;
+
+
 import com.revaturee.models.User;
-import com.revaturee.repo.AccountsDao;
-import com.revaturee.repo.BankDao;
+
+
 import com.revaturee.repo.CustomerDao;
 import com.revaturee.repo.UserDao;
 
 public class AuthenticateImpl implements Authenticate{
 
-	private Customer customer;
+	
 	private UserDao userDao;
-	private Accounts account;
+	
 	private CustomerDao customerDao;
-	private AccountsDao accountDao;
+	
+	public AuthenticateImpl(UserDao uDao, CustomerDao customerDao) {
+		// TODO Auto-generated constructor stub
+		this.userDao = uDao;
+		this.customerDao = customerDao;
+	}
+
 	
 	
 	@Override
 	public boolean authenticate(String username, String password) {
 		User u = getUser(username);
 		boolean success = false;
-		if(!(u == null) && u.getPassword().equals(password));
+		if(u.getUsername().equals(username) && u.getPassword().equals(password));
 		return success;
 	}
 	
@@ -42,14 +48,36 @@ public class AuthenticateImpl implements Authenticate{
 	
 	//Create account with starting balance -- create a method to method to retrieve customer ID from username in CustomerDao
 
-	@Override
-	public void createAccount(String username) {
+	//@Override
+	//public User createAccount(String username) {
 		// TODO Auto-generated method stub
-		User u = userDao.selectUserByUsername(username);
+	//	User u = userDao.selectUserByUsername(username);
 		
-		customer.createCustomerAccount(accountDao.insertAccountByCustomerID(customerDao.selectCustomerID(u.getUsername())));
+		//account.createCustomerAccount(accountDao.insertAccountByCustomerID(customerDao.selectCustomerID(u.getUsername())));
 		
-	}
+		//return u;
+		
+	//}
+
+	//@Override
+	//public User retrieveAccountDetails(String username) {
+		
+		//User u = userDao.selectUserByUsername(username);
+		
+		//account.retrieveCustomerAccountDetails(accountDao.selectAccountDetails(customerDao.selectCustomerID(u.getUsername())));
+		
+		//return u;
+	//}
+
+	//@Override
+	//public User changeBalanceDeposit(String username) {
+		//User u = userDao.selectUserByUsername(username);
+		
+		//account.depositMoney(accountDao.updateAccountDeposit(customerDao.selectCustomerID(u.getUsername())));
+		
+		//return u;
+		
+	//}
 
 	
 }

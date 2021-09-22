@@ -8,6 +8,10 @@ public interface Authenticate {
 
 	User getUser(String username);
 	
-	void createAccount(String username);
+	//User createAccount(String username);
+	
+	//User retrieveAccountDetails(String username);
+	
+	//User changeBalanceDeposit(String username);
 
 }

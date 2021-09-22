@@ -1,6 +1,7 @@
 package com.revaturee.repo;
 
 import com.revaturee.models.Customer;
+import com.revaturee.models.User;
 
 public interface CustomerDao {
 	
@@ -8,8 +9,10 @@ public interface CustomerDao {
 	//boolean insertCustomerDetails(Customer customer);
 
 	boolean insertDetailsByUsername(String username);
+	
+	boolean insertCustomerDetails(User u, Customer customer);
 
-	int selectCustomerID(String username);
+	//int selectCustomerID(String username);
 	//
 
 }

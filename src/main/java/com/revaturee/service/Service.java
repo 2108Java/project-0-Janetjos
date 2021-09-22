@@ -1,21 +1,36 @@
 package com.revaturee.service;
 
+import java.util.List;
+
+import com.revaturee.models.Accounts;
+import com.revaturee.models.Customer;
+import com.revaturee.models.TransactionLog;
+import com.revaturee.models.User;
+
 public interface Service {
 
-	void addAccount(String customerName, String mailingAddress, String residentialAddress, String phoneNumber);
+	boolean createAccount(Customer customer, User u);
 
-	void viewBalance();
+	List<Accounts> viewBalance(Accounts account, User u, Customer customer);
 
-	void transferMoney();
+	boolean transferMoney(Customer customer, float deposit, User u, Accounts account);
 
-	void acceptMoney();
+	boolean acceptMoney(float withdraw, User u, Customer customer, Accounts account);
 
-	void viewTransactionLog();
+	List<TransactionLog> viewTransactionLog(String accountNumber, User u, Customer customer);
 
-	void viewCustomerDetails();
+	List<TransactionLog> viewAllTransactionLog(User u);
 
-	void transactionApproval();
+	List<Accounts> viewAccounts(User u, Customer customer, Accounts account);
 
-	void accountApproval();
+	boolean approveAccount(User u, Customer customer);
+
+	boolean logDepositTransaction(Customer customer, float transferAmount, User u, Accounts account);
+
+	boolean logWithdrawalTransaction(Customer customer, float transferAmount, User u, Accounts account);
+
+	boolean createCustomerAccount(Accounts account, User u, Customer customer);
+
+
 
 }

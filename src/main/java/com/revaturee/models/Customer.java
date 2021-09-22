@@ -2,7 +2,7 @@ package com.revaturee.models;
 
 import java.util.List;
 
-public class Customer extends User{
+public class Customer {
 	
 	private int customerId;
 	private String customerName;
@@ -12,8 +12,7 @@ public class Customer extends User{
 		super();
 	}
 	
-	public Customer(String username, String password, int customerID, String customerName, String phoneNumber) {
-		super(username, password);
+	public Customer(int customerID, String customerName, String phoneNumber) {
 		this.customerId = customerId;
 		this.customerName = customerName;
 		this.phoneNumber = phoneNumber;
@@ -43,11 +42,7 @@ public class Customer extends User{
 		this.phoneNumber = phoneNumber;
 	}
 
-	public boolean createCustomerAccount(boolean b) {
-		return b;
-				
-	}
-	
+		
 		
 
 }

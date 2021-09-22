@@ -3,21 +3,23 @@ package com.revaturee.repo;
 import java.util.List;
 
 import com.revaturee.models.Accounts;
+import com.revaturee.models.Customer;
+import com.revaturee.models.User;
 import com.revaturee.util.ConnectionFactory;
 
 public interface AccountsDao {
 	
 	//boolean insertAccount();
 	
-	selectAccountDetails();
+	List<Accounts> selectAccountDetails(String username, Accounts account, Customer customer);
 	
-	updateAccountDeposit();
+	boolean updateAccountDeposit(String username, Customer customer, Accounts account, float deposit);
 	
-	updateAccountWithdraw();
+	boolean updateAccountWithdraw(String username, Customer customer, Accounts account, float withdraw);
 	
-	updateMoneyTransfer();
+	//updateMoneyTransfer();
 
-	boolean insertAccountByCustomerID(int customerID);
+	boolean insertCustomerAccount(Accounts account, User u, Customer customer);
 	
 		
 	//List<Accounts> selectListByCustomerId(int id);

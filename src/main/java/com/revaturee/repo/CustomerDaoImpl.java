@@ -50,35 +50,66 @@ public class CustomerDaoImpl implements CustomerDao{
 	}
 
 	@Override
-	public int selectCustomerID(String username) {
+	public boolean insertCustomerDetails(User u, Customer customer) {
 		
-		int customerId = 0;
+		boolean success = false;
 		
-		String sql = "SELECT CUSTOMER_ID FROM CUSTOMER WHERE fk_user_name = ?";
-		//Customer customer;
-		List<Accounts> accountList = new ArrayList<>();
+		
+		
+		String sql = "INSERT INTO CUSTOMER VALUES (?,?) WHERE fk_user_name = ?";
+		
+		PreparedStatement ps;
 		
 		try {
 			Connection connection = connectionFactory.getConnection();
+			ps = connection.prepareStatement(sql);
 			
-			PreparedStatement ps = connection.prepareStatement(sql);
+			//ps.setInt(1, customer.getCustomerId()); Need to remove if it works
+			ps.setString(1, customer.getCustomerName());
+			ps.setString(2, customer.getPhoneNumber());
+			ps.setString(3, u.getUsername());
+				
+			ps.execute();		
 			
-			ps.setString(1, username);
+			success = true;
 			
-			ResultSet rs = ps.executeQuery();
-			
-			while(rs.next()) {
-				customerId = rs.getInt("CUSTOMER_ID");
-								
-			}
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			}catch(SQLException e) {
 			e.printStackTrace();
 		}
+		return success;
 		
-		return customerId;
 	}
+
+	//@Override
+	//public int selectCustomerID(String username) {
+		
+		//int customerId = 0;
+		
+		//String sql = "SELECT CUSTOMER_ID FROM CUSTOMER WHERE fk_user_name = ?";
+		//Customer customer;
+		//List<Accounts> accountList = new ArrayList<>();
+		
+		//try {
+			//Connection connection = connectionFactory.getConnection();
+			
+			//PreparedStatement ps = connection.prepareStatement(sql);
+			
+			//ps.setString(1, username);
+			
+			//ResultSet rs = ps.executeQuery();
+			
+			//while(rs.next()) {
+				//customerId = rs.getInt("CUSTOMER_ID");
+								
+			//}
+			
+		//} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		//}
+		
+		//return customerId;
+	//}
 
 		
 		

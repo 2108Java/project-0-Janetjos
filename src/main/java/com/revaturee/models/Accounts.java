@@ -1,26 +1,29 @@
 package com.revaturee.models;
 
+import java.util.List;
+
 public class Accounts {
 	
-	private int accountNumber;
+	private String accountNumber;
 	private float balance;
 	private String accountType; 
+	private List<Accounts> accountDetails;
 	
 	public Accounts() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Accounts(int accountNumber, float balance, String accountType) {
+	public Accounts(String accountNumber, float balance, String accountType) {
 		super();
 		this.accountNumber = accountNumber;
 		this.balance = balance;
 		this.accountType = accountType;
 		
 	}
-	public int getAccountNumber() {
+	public String getAccountNumber() {
 		return accountNumber;
 	}
-	public void setAccountNumber(int accountNumber) {
+	public void setAccountNumber(String accountNumber) {
 		this.accountNumber = accountNumber;
 	}
 	public float getBalance() {
@@ -34,6 +37,21 @@ public class Accounts {
 	}
 	public void setAccountType(String accountType) {
 		this.accountType = accountType;
+	}
+	public boolean createCustomerAccount(boolean b) {
+		// TODO Auto-generated method stub
+		return b;
+		
+	}
+	public void retrieveCustomerAccountDetails(List<Accounts> accountDetails) {
+		this.accountDetails = accountDetails;
+		
+	}
+	
+	public boolean depositMoney(boolean b) {
+		
+		return b;
+		
 	}
 	
 

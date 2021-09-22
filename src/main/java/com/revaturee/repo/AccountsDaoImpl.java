@@ -13,17 +13,17 @@ import com.revaturee.models.User;
 import com.revaturee.util.ConnectionFactory;
 
 public class AccountsDaoImpl implements AccountsDao{
-	Accounts account = new Accounts();
+	//Accounts account = new Accounts();
 	
 	ConnectionFactory connectionFactory = new ConnectionFactory();
 
 	//CHECK return type, input and DAO connection
 	@Override
-	public boolean insertAccountByCustomerID(int customerID) {
+	public boolean insertCustomerAccount(Accounts account, User u, Customer customer) {
 		boolean success = false;
 		
 				
-		String sql = "INSERT INTO ACCOUNT_LIST VALUES (?,?,?) WHERE fk_customer_ID = ?";//Implement starting balance
+		String sql = "INSERT INTO ACCOUNT_LIST VALUES (RAND(),?,?) WHERE fk_user_name = ?";//Implement starting balance
 		
 		PreparedStatement ps;
 		
@@ -31,10 +31,10 @@ public class AccountsDaoImpl implements AccountsDao{
 			Connection connection = connectionFactory.getConnection();
 			ps = connection.prepareStatement(sql);
 			
-			ps.setInt(1, account.getAccountNumber());
-			ps.setFloat(2, account.getBalance());
-			ps.setString(3, account.getAccountType());
-			ps.setInt(4, customerID);			
+			//ps.setString(1, account.getAccountNumber());
+			ps.setFloat(1, (float) 1000.00);
+			ps.setString(2, account.getAccountType());
+			ps.setString(3, u.getUsername());			
 				
 			ps.execute();		
 			
@@ -51,8 +51,8 @@ public class AccountsDaoImpl implements AccountsDao{
 	
 
 	@Override
-	public List<Accounts> selectAccountDetails(int id) {
-		String sql = "SELECT * FROM ACCOUNT_LIST WHERE fk_customer_ID = ?";
+	public List<Accounts> selectAccountDetails(String username, Accounts account, Customer customer) {
+		String sql = "SELECT * FROM ACCOUNT_LIST WHERE fk_user_name = ?";
 		//Customer customer;
 		List<Accounts> accountList = new ArrayList<>();
 		
@@ -61,13 +61,13 @@ public class AccountsDaoImpl implements AccountsDao{
 			
 			PreparedStatement ps = connection.prepareStatement(sql);
 			
-			ps.setInt(1, id);
+			ps.setString(1, username);
 			
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
 				accountList.add(
-						new Accounts(rs.getInt("Account_Number"),
+						new Accounts(rs.getString("Account_Number"),
 								rs.getFloat("Balance"), 
 								rs.getString("Account_Type"))
 						);
@@ -85,11 +85,11 @@ public class AccountsDaoImpl implements AccountsDao{
 	//Take care of functionality in the service layer, pass in both ID and final balance value
 
 	@Override
-	public boolean updateAccountDeposit(int id, float newBalance) {
+	public boolean updateAccountDeposit(String username, Customer customer, Accounts account, float deposit) {
 		boolean success = false;
 		
 		
-		String sql = "UPDATE ACCOUNT_LIST SET BALANCE = ? WHERE fk_customer_ID = ?";//Implement starting balance
+		String sql = "UPDATE ACCOUNT_LIST SET BALANCE = ? WHERE fk_user_name = ?";//Implement starting balance
 		
 		PreparedStatement ps;
 		
@@ -97,8 +97,8 @@ public class AccountsDaoImpl implements AccountsDao{
 			Connection connection = connectionFactory.getConnection();
 			ps = connection.prepareStatement(sql);
 			
-			ps.setFloat(1, newBalance);
-			ps.setInt(2, id);
+			ps.setFloat(1, account.getBalance() + deposit);
+			ps.setString(2, username);
 				
 			ps.execute();		
 			
@@ -115,11 +115,11 @@ public class AccountsDaoImpl implements AccountsDao{
 	//Take care of functionality in the service layer, pass in both ID and final balance value. See if we can combine the above two methods
 
 	@Override
-	public boolean updateAccountWithdraw(int id, float newBalance) {
+	public boolean updateAccountWithdraw(String username, Customer customer, Accounts account, float withdraw) {
 		boolean success = false;
 		
 		
-		String sql = "UPDATE ACCOUNT_LIST SET BALANCE = ? WHERE fk_customer_ID = ?";//Implement starting balance
+		String sql = "UPDATE ACCOUNT_LIST SET BALANCE = ? WHERE fk_user_name = ?";//Implement starting balance
 		
 		PreparedStatement ps;
 		
@@ -127,9 +127,9 @@ public class AccountsDaoImpl implements AccountsDao{
 			Connection connection = connectionFactory.getConnection();
 			ps = connection.prepareStatement(sql);
 			
-			ps.setFloat(1, newBalance);
-			ps.setInt(2, id);
-				
+			ps.setFloat(1, account.getBalance() - withdraw);
+			ps.setString(2, username);
+			
 			ps.execute();		
 			
 			success = true;
@@ -145,11 +145,11 @@ public class AccountsDaoImpl implements AccountsDao{
 	
 	//Don't think it belongs in this Implementation
 
-	@Override
-	public void updateMoneyTransfer() {
+	//@Override
+	//public void updateMoneyTransfer() {
 		// TODO Auto-generated method stub
 		
-	}
+	//}
 	
 	
 	

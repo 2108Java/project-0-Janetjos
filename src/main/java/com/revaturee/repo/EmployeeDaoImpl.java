@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.revaturee.models.Accounts;
+import com.revaturee.models.Customer;
 import com.revaturee.models.TransactionLog;
+import com.revaturee.models.User;
 import com.revaturee.util.ConnectionFactory;
 
 public class EmployeeDaoImpl implements EmployeeDao{
@@ -16,8 +18,8 @@ public class EmployeeDaoImpl implements EmployeeDao{
 	ConnectionFactory connectionFactory = new ConnectionFactory();
 
 	@Override
-	public List<TransactionLog> selectTransactionLog(int id) {
-		String sql = "SELECT * FROM TRANSACTION_LOG WHERE fk_customer_ID = ?";
+	public List<TransactionLog> selectTransactionLog(User u, Customer customer) {
+		String sql = "SELECT * FROM TRANSACTION_LOG WHERE fk_user_name = ?";
 		//Customer customer;
 		List<TransactionLog> customerTransactionLog = new ArrayList<>();
 		
@@ -26,17 +28,16 @@ public class EmployeeDaoImpl implements EmployeeDao{
 			
 			PreparedStatement ps = connection.prepareStatement(sql);
 			
-			ps.setInt(1, id);
+			ps.setString(1, u.getUsername());
 			
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
 				customerTransactionLog.add(
-						new TransactionLog(rs.getInt("From_Account_Number"),
-								rs.getInt("To_Account_Number"), 
-								rs.getFloat("Amount"),
-								rs.getBoolean("Status"),
-								rs.getFloat("Date"))
+						new TransactionLog(rs.getString("Account_Number"),
+								rs.getFloat("Transfer_Amount"), 
+								rs.getFloat("Current_Amount"))
+								
 						);
 			}
 			
@@ -45,21 +46,45 @@ public class EmployeeDaoImpl implements EmployeeDao{
 			e.printStackTrace();
 		}
 		
-		return accountList;
+		return customerTransactionLog;
 		
 	}
 	
 	
 	
 	@Override
-	public boolean approveUserAccount(int id, boolean approval) {
+	public boolean approveUserAccount(User u, Customer customer) {
 		
-		return false;
+		boolean success = false;
+		
+		
+		String sql = "UPDATE CUSTOMER Approval_Status_By_Employee = ? WHERE fk_user_name = ?";//Implement starting balance
+		
+		PreparedStatement ps;
+		
+		try {
+			Connection connection = connectionFactory.getConnection();
+			ps = connection.prepareStatement(sql);
+			
+			ps.setBoolean(1, true);
+			ps.setString(2, u.getUsername());
+				
+			ps.execute();		
+			
+			success = true;
+			
+			}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return success;
+		
+		
+		
 	}
 
 	@Override
-	public List<Accounts> selectCustomerAccountList(int id) {
-		String sql = "SELECT * FROM ACCOUNT_LIST WHERE fk_customer_ID = ?";
+	public List<Accounts> selectCustomerAccountList(User u, Customer customer) {
+		String sql = "SELECT * FROM ACCOUNT_LIST WHERE fk_user_name = ?";
 		//Customer customer;
 		List<Accounts> accountList = new ArrayList<>();
 		
@@ -68,13 +93,13 @@ public class EmployeeDaoImpl implements EmployeeDao{
 			
 			PreparedStatement ps = connection.prepareStatement(sql);
 			
-			ps.setInt(1, id);
+			ps.setString(1, u.getUsername());
 			
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
 				accountList.add(
-						new Accounts(rs.getInt("Account_Number"),
+						new Accounts(rs.getString("Account_Number"),
 								rs.getFloat("Balance"), 
 								rs.getString("Account_Type"))
 						);
@@ -86,7 +111,7 @@ public class EmployeeDaoImpl implements EmployeeDao{
 		}
 		
 		return accountList;
-		return null;
+		
 	}
 
 }
