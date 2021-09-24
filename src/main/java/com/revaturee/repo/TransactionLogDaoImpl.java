@@ -34,7 +34,7 @@ public class TransactionLogDaoImpl implements TransactionLogDao{
 			ps = connection.prepareStatement(sql);
 			
 						
-			ps.setString(1, account.getAccountNumber());
+			ps.setInt(1, account.getAccountNumber());
 			ps.setFloat(2, transferAmount);
 			ps.setFloat(3, account.getBalance() + transferAmount);
 		
@@ -50,8 +50,8 @@ public class TransactionLogDaoImpl implements TransactionLogDao{
 	}
 
 	@Override
-	public List<TransactionLog> selectTransactionList(String accountNumber, User u, Customer customer) {
-		String sql = "SELECT * FROM TRANSACTION_LOG WHERE fk_user_name = ?";
+	public List<TransactionLog> selectTransactionList(Accounts account, User u, Customer customer) {
+		String sql = "SELECT * FROM TRANSACTION_LOG WHERE account_number = ?";
 		
 				
 		List<TransactionLog> transactionList = new ArrayList<>();
@@ -61,7 +61,7 @@ public class TransactionLogDaoImpl implements TransactionLogDao{
 			
 			PreparedStatement ps = connection.prepareStatement(sql);
 			
-			ps.setString(1, u.getUsername());
+			ps.setInt(1, account.getAccountNumber());
 			
 			ResultSet rs = ps.executeQuery();
 			
@@ -133,7 +133,7 @@ public class TransactionLogDaoImpl implements TransactionLogDao{
 			ps = connection.prepareStatement(sql);
 			
 						
-			ps.setString(1, account.getAccountNumber());
+			ps.setInt(1, account.getAccountNumber());
 			ps.setFloat(2, transferAmount);
 			ps.setFloat(3, account.getBalance() - transferAmount);
 		

@@ -26,7 +26,7 @@ public class CustomerDaoImpl implements CustomerDao{
 		
 		
 		
-		String sql = "INSERT INTO CUSTOMER VALUES (?,?) WHERE fk_user_name = ?";
+		String sql = "INSERT INTO CUSTOMER (CUSTOMER_NAME, CUSTOMER_PHONENUMBER, APPROVAL_STATUS_BY_EMPLOYEE, FK_USER_NAME)VALUES(?,?,?,?)";
 		
 		PreparedStatement ps;
 		
@@ -37,7 +37,8 @@ public class CustomerDaoImpl implements CustomerDao{
 			//ps.setInt(1, customer.getCustomerId()); Need to remove if it works
 			ps.setString(1, customer.getCustomerName());
 			ps.setString(2, customer.getPhoneNumber());
-			ps.setString(3, username);
+			ps.setBoolean(3, false);
+			ps.setString(4, username);
 				
 			ps.execute();		
 			
@@ -56,7 +57,7 @@ public class CustomerDaoImpl implements CustomerDao{
 		
 		
 		
-		String sql = "INSERT INTO CUSTOMER VALUES (?,?) WHERE fk_user_name = ?";
+		String sql = "INSERT INTO CUSTOMER (CUSTOMER_NAME, CUSTOMER_PHONENUMBER, APPROVAL_STATUS_BY_EMPLOYEE, FK_USER_NAME)VALUES(?,?,?,?)";
 		
 		PreparedStatement ps;
 		
@@ -67,7 +68,8 @@ public class CustomerDaoImpl implements CustomerDao{
 			//ps.setInt(1, customer.getCustomerId()); Need to remove if it works
 			ps.setString(1, customer.getCustomerName());
 			ps.setString(2, customer.getPhoneNumber());
-			ps.setString(3, u.getUsername());
+			ps.setBoolean(3, false);
+			ps.setString(4, u.getUsername());
 				
 			ps.execute();		
 			

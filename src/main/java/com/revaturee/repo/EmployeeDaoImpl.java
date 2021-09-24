@@ -58,7 +58,7 @@ public class EmployeeDaoImpl implements EmployeeDao{
 		boolean success = false;
 		
 		
-		String sql = "UPDATE CUSTOMER Approval_Status_By_Employee = ? WHERE fk_user_name = ?";//Implement starting balance
+		String sql = "UPDATE CUSTOMER set Approval_Status_By_Employee = ? WHERE Customer_ID = ?";
 		
 		PreparedStatement ps;
 		
@@ -67,7 +67,7 @@ public class EmployeeDaoImpl implements EmployeeDao{
 			ps = connection.prepareStatement(sql);
 			
 			ps.setBoolean(1, true);
-			ps.setString(2, u.getUsername());
+			ps.setInt(2, customer.getCustomerId());
 				
 			ps.execute();		
 			
@@ -99,7 +99,7 @@ public class EmployeeDaoImpl implements EmployeeDao{
 			
 			while(rs.next()) {
 				accountList.add(
-						new Accounts(rs.getString("Account_Number"),
+						new Accounts(rs.getInt("Account_Number"),
 								rs.getFloat("Balance"), 
 								rs.getString("Account_Type"))
 						);

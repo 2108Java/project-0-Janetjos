@@ -23,7 +23,7 @@ public class AccountsDaoImpl implements AccountsDao{
 		boolean success = false;
 		
 				
-		String sql = "INSERT INTO ACCOUNT_LIST VALUES (RAND(),?,?) WHERE fk_user_name = ?";//Implement starting balance
+		String sql = "INSERT INTO ACCOUNT_LIST (Balance,Account_Type,fk_user_name) VALUES (cast(? as float), ?,?);";
 		
 		PreparedStatement ps;
 		
@@ -31,7 +31,6 @@ public class AccountsDaoImpl implements AccountsDao{
 			Connection connection = connectionFactory.getConnection();
 			ps = connection.prepareStatement(sql);
 			
-			//ps.setString(1, account.getAccountNumber());
 			ps.setFloat(1, (float) 1000.00);
 			ps.setString(2, account.getAccountType());
 			ps.setString(3, u.getUsername());			
@@ -53,7 +52,7 @@ public class AccountsDaoImpl implements AccountsDao{
 	@Override
 	public List<Accounts> selectAccountDetails(String username, Accounts account, Customer customer) {
 		String sql = "SELECT * FROM ACCOUNT_LIST WHERE fk_user_name = ?";
-		//Customer customer;
+		
 		List<Accounts> accountList = new ArrayList<>();
 		
 		try {
@@ -67,7 +66,7 @@ public class AccountsDaoImpl implements AccountsDao{
 			
 			while(rs.next()) {
 				accountList.add(
-						new Accounts(rs.getString("Account_Number"),
+						new Accounts(rs.getInt("Account_Number"),
 								rs.getFloat("Balance"), 
 								rs.getString("Account_Type"))
 						);
@@ -82,14 +81,14 @@ public class AccountsDaoImpl implements AccountsDao{
 		
 	}
 	
-	//Take care of functionality in the service layer, pass in both ID and final balance value
+	
 
 	@Override
 	public boolean updateAccountDeposit(String username, Customer customer, Accounts account, float deposit) {
 		boolean success = false;
 		
 		
-		String sql = "UPDATE ACCOUNT_LIST SET BALANCE = ? WHERE fk_user_name = ?";//Implement starting balance
+		String sql = "UPDATE ACCOUNT_LIST SET BALANCE = ? WHERE ACCOUNT_NUMBER = ?";
 		
 		PreparedStatement ps;
 		
@@ -98,7 +97,7 @@ public class AccountsDaoImpl implements AccountsDao{
 			ps = connection.prepareStatement(sql);
 			
 			ps.setFloat(1, account.getBalance() + deposit);
-			ps.setString(2, username);
+			ps.setInt(2, account.getAccountNumber());
 				
 			ps.execute();		
 			
@@ -112,14 +111,14 @@ public class AccountsDaoImpl implements AccountsDao{
 				
 	}
 	
-	//Take care of functionality in the service layer, pass in both ID and final balance value. See if we can combine the above two methods
+	
 
 	@Override
 	public boolean updateAccountWithdraw(String username, Customer customer, Accounts account, float withdraw) {
 		boolean success = false;
 		
 		
-		String sql = "UPDATE ACCOUNT_LIST SET BALANCE = ? WHERE fk_user_name = ?";//Implement starting balance
+		String sql = "UPDATE ACCOUNT_LIST SET BALANCE = ? WHERE ACCOUNT_NUMBER = ?";
 		
 		PreparedStatement ps;
 		
@@ -128,7 +127,7 @@ public class AccountsDaoImpl implements AccountsDao{
 			ps = connection.prepareStatement(sql);
 			
 			ps.setFloat(1, account.getBalance() - withdraw);
-			ps.setString(2, username);
+			ps.setInt(2, account.getAccountNumber());
 			
 			ps.execute();		
 			
@@ -143,13 +142,6 @@ public class AccountsDaoImpl implements AccountsDao{
 		
 	}
 	
-	//Don't think it belongs in this Implementation
-
-	//@Override
-	//public void updateMoneyTransfer() {
-		// TODO Auto-generated method stub
-		
-	//}
 	
 	
 	

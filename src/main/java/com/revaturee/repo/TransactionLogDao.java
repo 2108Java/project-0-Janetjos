@@ -13,7 +13,7 @@ public interface TransactionLogDao {
 	
 	boolean insertWithdrawalTransactionDetails(Customer customer, float transferAmount, User u, Accounts account);
 	
-	List<TransactionLog> selectTransactionList(String accountNumber, User u, Customer customer);
+	List<TransactionLog> selectTransactionList(Accounts account, User u, Customer customer);
 	
 	List<TransactionLog> selectAllTransactionList(User u);
 

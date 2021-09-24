@@ -23,11 +23,19 @@ public class AuthenticateImpl implements Authenticate{
 
 	
 	
+	public AuthenticateImpl() {
+		// TODO Auto-generated constructor stub
+	}
+
+
+
 	@Override
 	public boolean authenticate(String username, String password) {
 		User u = getUser(username);
 		boolean success = false;
-		if(u.getUsername().equals(username) && u.getPassword().equals(password));
+		if(!(u==null) && u.getPassword().equals(password)) {
+			success = true;
+		}
 		return success;
 	}
 	
@@ -38,7 +46,7 @@ public class AuthenticateImpl implements Authenticate{
 		User u = userDao.selectUserByUsername(username);
 		
 				
-		u.setCustomerDetails(customerDao.insertDetailsByUsername(u.getUsername()));
+		//u.setCustomerDetails(customerDao.insertDetailsByUsername(u.getUsername()));
 		
 		return u;
 		

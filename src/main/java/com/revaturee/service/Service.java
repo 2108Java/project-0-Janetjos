@@ -9,6 +9,8 @@ import com.revaturee.models.User;
 
 public interface Service {
 
+
+
 	boolean createAccount(Customer customer, User u);
 
 	List<Accounts> viewBalance(Accounts account, User u, Customer customer);
@@ -17,7 +19,7 @@ public interface Service {
 
 	boolean acceptMoney(float withdraw, User u, Customer customer, Accounts account);
 
-	List<TransactionLog> viewTransactionLog(String accountNumber, User u, Customer customer);
+	List<TransactionLog> viewTransactionLog(Accounts account, User u, Customer customer);
 
 	List<TransactionLog> viewAllTransactionLog(User u);
 
@@ -30,6 +32,8 @@ public interface Service {
 	boolean logWithdrawalTransaction(Customer customer, float transferAmount, User u, Accounts account);
 
 	boolean createCustomerAccount(Accounts account, User u, Customer customer);
+
+	boolean createUser(User u);
 
 
 

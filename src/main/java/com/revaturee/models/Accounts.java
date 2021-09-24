@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Accounts {
 	
-	private String accountNumber;
+	private int accountNumber;
 	private float balance;
 	private String accountType; 
 	private List<Accounts> accountDetails;
@@ -13,17 +13,17 @@ public class Accounts {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Accounts(String accountNumber, float balance, String accountType) {
+	public Accounts(int accountNumber, float balance, String accountType) {
 		super();
 		this.accountNumber = accountNumber;
 		this.balance = balance;
 		this.accountType = accountType;
 		
 	}
-	public String getAccountNumber() {
+	public int getAccountNumber() {
 		return accountNumber;
 	}
-	public void setAccountNumber(String accountNumber) {
+	public void setAccountNumber(int accountNumber) {
 		this.accountNumber = accountNumber;
 	}
 	public float getBalance() {

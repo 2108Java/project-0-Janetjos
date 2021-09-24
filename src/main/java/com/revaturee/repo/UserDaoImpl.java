@@ -10,14 +10,14 @@ import com.revaturee.util.ConnectionFactory;
 
 public class UserDaoImpl implements UserDao{
 	
-	ConnectionFactory connectionFactory;
+	ConnectionFactory connectionFactory = new ConnectionFactory();
 
 	@Override
 	public User selectUserByUsername(String username) {
 		String sql = "SELECT * FROM users_table where username = ?";
 		
 		PreparedStatement ps;
-		User u = null;
+		User u = new User();
 		try {
 			Connection connection = connectionFactory.getConnection();
 			ps = connection.prepareStatement(sql);
@@ -35,6 +35,33 @@ public class UserDaoImpl implements UserDao{
 			e.printStackTrace();
 		}
 		return u;
+	}
+
+	@Override
+	public boolean insertUser(User u) {
+		boolean success = false;
+		
+		
+		String sql = "INSERT INTO USERS_TABLE VALUES (?,?)";
+		
+		PreparedStatement ps;
+		
+		try {
+			Connection connection = connectionFactory.getConnection();
+			ps = connection.prepareStatement(sql);
+			
+			ps.setString(1, u.getUsername());
+			ps.setString(2, u.getPassword());			
+				
+			ps.execute();		
+			
+			success = true;
+			
+			}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return success;
+		
 	}
 
 }

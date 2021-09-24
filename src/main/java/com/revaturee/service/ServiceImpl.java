@@ -7,16 +7,23 @@ import com.revaturee.models.Customer;
 import com.revaturee.models.TransactionLog;
 import com.revaturee.models.User;
 import com.revaturee.repo.AccountsDao;
+import com.revaturee.repo.AccountsDaoImpl;
 import com.revaturee.repo.CustomerDao;
+import com.revaturee.repo.CustomerDaoImpl;
 import com.revaturee.repo.EmployeeDao;
+import com.revaturee.repo.EmployeeDaoImpl;
 import com.revaturee.repo.TransactionLogDao;
+import com.revaturee.repo.TransactionLogDaoImpl;
+import com.revaturee.repo.UserDao;
+import com.revaturee.repo.UserDaoImpl;
 
 public class ServiceImpl implements Service{
 	
-	AccountsDao accountDao;
-	CustomerDao customerDao;
-	EmployeeDao employeeDao;
-	TransactionLogDao transactionLogDao;
+	UserDao userDao = new UserDaoImpl();
+	AccountsDao accountDao = new AccountsDaoImpl();
+	CustomerDao customerDao = new CustomerDaoImpl();
+	EmployeeDao employeeDao = new EmployeeDaoImpl();
+	TransactionLogDao transactionLogDao = new TransactionLogDaoImpl();
 	
 	
 	public ServiceImpl(AccountsDao accountDao, CustomerDao customerDao, EmployeeDao employeeDao, TransactionLogDao transactionLogDao) {
@@ -24,6 +31,10 @@ public class ServiceImpl implements Service{
 		this.customerDao = customerDao;
 		this.employeeDao = employeeDao;
 		this.transactionLogDao = transactionLogDao;
+	}
+
+	public ServiceImpl() {
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -56,8 +67,8 @@ public class ServiceImpl implements Service{
 	}
 
 	@Override
-	public List<TransactionLog> viewTransactionLog(String accountNumber, User u, Customer customer) {
-		return transactionLogDao.selectTransactionList(accountNumber, u, customer);
+	public List<TransactionLog> viewTransactionLog(Accounts account, User u, Customer customer) {
+		return transactionLogDao.selectTransactionList(account, u, customer);
 		
 	}
 
@@ -99,6 +110,11 @@ public class ServiceImpl implements Service{
 	@Override
 	public boolean createCustomerAccount(Accounts account, User u, Customer customer) {
 		return accountDao.insertCustomerAccount(account, u, customer);
+	}
+
+	@Override
+	public boolean createUser(User u) {
+		return userDao.insertUser(u);
 	}
 	
 	
